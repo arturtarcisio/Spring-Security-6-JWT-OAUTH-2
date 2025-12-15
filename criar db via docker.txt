@@ -1,0 +1,18 @@
+definir um arquivo na raiz como docker-compose.yml
+
+bota as configurações abaixo que diz respeito a user password e porta exposta do container
+
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=123
+      - MYSQL_DATABASE=mydb
+      - MYSQL_ROOT_PASSWORD=123
+
+depois rodar no terminal do intellij ou cmd -> docker compose up

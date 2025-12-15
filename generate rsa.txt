@@ -1,0 +1,7 @@
+cd src/main/resources
+
+openssl genrsa > app.key
+(app.key é o nome do arquivo que sera criado dentro da pasta resources com a chave privada)
+
+openssl rsa -in app.key -pubout -out app.pub
+(app.key é o arquivo que contem a chave privada e app.pub é o nome arquivo da chave publica que é linkado com a chave privada)
