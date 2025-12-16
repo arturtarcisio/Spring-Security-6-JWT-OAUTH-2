@@ -1,6 +1,7 @@
 package io.github.arturtcs.springsecurity.controller;
 
 import io.github.arturtcs.springsecurity.repositories.UserRepository;
+import io.github.arturtcs.springsecurity.service.TokenService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,41 +18,16 @@ import java.time.Instant;
 @RestController
 public class TokenController {
 
-    private final JwtEncoder jwtEncoder;
+    private final TokenService tokenService;
 
-    private final UserRepository userRepository;
-
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public TokenController(JwtEncoder jwtEncoder,
-                           UserRepository userRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.jwtEncoder = jwtEncoder;
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public TokenController(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login (@RequestBody LoginRequest loginRequest) {
-        var user = userRepository.findByUsername(loginRequest.username());
-
-        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)){
-            throw new BadCredentialsException("user or password is invalid!");
-        }
-
-        var now = Instant.now();
-        var expiresIn = 500L;
-
-        var claims = JwtClaimsSet.builder()
-                .issuer("mybackend")
-                .subject(user.get().getUserId().toString())
-                .issuedAt(now)
-                .expiresAt(now.plusSeconds(expiresIn))
-                .build();
-
-        var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-
-        return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
+        var loginResponse = tokenService.getToken(loginRequest);
+        return ResponseEntity.ok(loginResponse);
     }
 
 }
