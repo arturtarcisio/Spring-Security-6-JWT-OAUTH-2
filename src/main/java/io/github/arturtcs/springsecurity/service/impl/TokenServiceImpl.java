@@ -1,7 +1,7 @@
 package io.github.arturtcs.springsecurity.service.impl;
 
-import io.github.arturtcs.springsecurity.controller.LoginRequest;
-import io.github.arturtcs.springsecurity.controller.LoginResponse;
+import io.github.arturtcs.springsecurity.dto.LoginRequestDTO;
+import io.github.arturtcs.springsecurity.dto.LoginResponseDTO;
 import io.github.arturtcs.springsecurity.repositories.UserRepository;
 import io.github.arturtcs.springsecurity.service.TokenService;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,9 +29,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public LoginResponse getToken(LoginRequest loginRequest) {
-        var user = userRepository.findByUsername(loginRequest.username());
-        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)){
+    public LoginResponseDTO getToken(LoginRequestDTO loginRequestDTO) {
+        var user = userRepository.findByUsername(loginRequestDTO.username());
+        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequestDTO, bCryptPasswordEncoder)){
             throw new BadCredentialsException("user or password is invalid!");
         }
 
@@ -47,6 +47,6 @@ public class TokenServiceImpl implements TokenService {
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
-        return new LoginResponse(jwtValue, expiresIn);
+        return new LoginResponseDTO(jwtValue, expiresIn);
     }
 }

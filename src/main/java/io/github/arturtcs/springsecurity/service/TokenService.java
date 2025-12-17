@@ -1,9 +1,9 @@
 package io.github.arturtcs.springsecurity.service;
 
-import io.github.arturtcs.springsecurity.controller.LoginRequest;
-import io.github.arturtcs.springsecurity.controller.LoginResponse;
+import io.github.arturtcs.springsecurity.dto.LoginRequestDTO;
+import io.github.arturtcs.springsecurity.dto.LoginResponseDTO;
 
 public interface TokenService {
 
-    public LoginResponse getToken(LoginRequest loginRequest);
+    public LoginResponseDTO getToken(LoginRequestDTO loginRequestDTO);
 }

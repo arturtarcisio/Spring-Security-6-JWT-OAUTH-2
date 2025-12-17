@@ -1,6 +1,6 @@
 package io.github.arturtcs.springsecurity.entities;
 
-import io.github.arturtcs.springsecurity.controller.LoginRequest;
+import io.github.arturtcs.springsecurity.dto.LoginRequestDTO;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -71,7 +71,7 @@ public class User {
                 '}';
     }
 
-    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder) {
-        return passwordEncoder.matches(loginRequest.password(), this.password);
+    public boolean isLoginCorrect(LoginRequestDTO loginRequestDTO, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequestDTO.password(), this.password);
     }
 }
