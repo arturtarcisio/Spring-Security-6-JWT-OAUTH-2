@@ -3,10 +3,10 @@ package io.github.arturtcs.springsecurity.service.impl;
 import io.github.arturtcs.springsecurity.dto.NewUserDTO;
 import io.github.arturtcs.springsecurity.entities.Role;
 import io.github.arturtcs.springsecurity.entities.User;
+import io.github.arturtcs.springsecurity.exceptions.UserExistsException;
 import io.github.arturtcs.springsecurity.repositories.RoleRepository;
 import io.github.arturtcs.springsecurity.repositories.UserRepository;
 import io.github.arturtcs.springsecurity.service.UserService;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         userFromDB.ifPresentOrElse(
                 user -> {
-
+                    throw new UserExistsException("User already exists!");
                 },
                 () -> {
                     var user = new User();
