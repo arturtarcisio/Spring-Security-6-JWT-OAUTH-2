@@ -2,6 +2,7 @@ package io.github.arturtcs.springsecurity.controller;
 
 import io.github.arturtcs.springsecurity.dto.NewUserDTO;
 import io.github.arturtcs.springsecurity.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createNewUser(@RequestBody NewUserDTO newUserDTO) {
+    public ResponseEntity<Void> createNewUser(@Valid @RequestBody NewUserDTO newUserDTO) {
         userService.newUser(newUserDTO);
         return ResponseEntity.ok().build();
     }
