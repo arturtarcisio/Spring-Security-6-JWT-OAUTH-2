@@ -2,6 +2,7 @@ package io.github.arturtcs.springsecurity.service.impl;
 
 import io.github.arturtcs.springsecurity.dto.LoginRequestDTO;
 import io.github.arturtcs.springsecurity.dto.LoginResponseDTO;
+import io.github.arturtcs.springsecurity.entities.Role;
 import io.github.arturtcs.springsecurity.repositories.UserRepository;
 import io.github.arturtcs.springsecurity.service.TokenService;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenServiceImpl implements TokenService {
@@ -38,11 +40,17 @@ public class TokenServiceImpl implements TokenService {
         var now = Instant.now();
         var expiresIn = 500L;
 
+        var scopes = user.get().getRoles()
+                .stream()
+                .map(role -> role.getName().toUpperCase())
+                .collect(Collectors.joining(" "));
+
         var claims = JwtClaimsSet.builder()
                 .issuer("mybackend")
                 .subject(user.get().getUserId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
+                .claim("scope", scopes)
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
