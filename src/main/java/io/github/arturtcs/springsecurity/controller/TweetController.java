@@ -1,11 +1,15 @@
 package io.github.arturtcs.springsecurity.controller;
 
+import io.github.arturtcs.springsecurity.dto.FeedDTO;
 import io.github.arturtcs.springsecurity.dto.TweetRequestDTO;
+import io.github.arturtcs.springsecurity.entities.Tweet;
 import io.github.arturtcs.springsecurity.service.TweetService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tweets")
@@ -33,5 +37,13 @@ public class TweetController {
         tweetService.deleteTweet(tweetId, token);
         return ResponseEntity.ok().build();
 
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<FeedDTO> feed(@RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+
+        var tweets = tweetService.findAll(page, pageSize);
+        return ResponseEntity.ok().body(new FeedDTO(tweets.getContent(), page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
     }
 }

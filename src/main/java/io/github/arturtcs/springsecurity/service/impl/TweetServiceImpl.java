@@ -1,5 +1,6 @@
 package io.github.arturtcs.springsecurity.service.impl;
 
+import io.github.arturtcs.springsecurity.dto.FeedItemDTO;
 import io.github.arturtcs.springsecurity.dto.TweetRequestDTO;
 import io.github.arturtcs.springsecurity.entities.Role;
 import io.github.arturtcs.springsecurity.entities.Tweet;
@@ -8,12 +9,16 @@ import io.github.arturtcs.springsecurity.repositories.TweetRepository;
 import io.github.arturtcs.springsecurity.repositories.UserRepository;
 import io.github.arturtcs.springsecurity.service.TweetService;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,4 +64,17 @@ public class TweetServiceImpl implements TweetService {
 
 
     }
+
+    @Override
+    public Page<FeedItemDTO> findAll(int page, int pageSize) {
+        return tweetRepository
+                .findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"))
+                .map(tweet ->
+                        new FeedItemDTO(
+                                tweet.getTweetId(),
+                                tweet.getContent(),
+                                tweet.getUser().getUsername()));
+    }
+
+
 }
